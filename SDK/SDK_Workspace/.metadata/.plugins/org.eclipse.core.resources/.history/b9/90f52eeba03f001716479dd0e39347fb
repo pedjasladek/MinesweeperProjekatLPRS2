@@ -350,25 +350,33 @@ void move() {
 
 	while (endOfGame != 1) {
 
+		openField(oldStartX, startY, blankMap);
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
+			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
+				if (endY < 76) {
 
+					oldStartY = startY;
+					oldEndY = endY;
+					startY += 16;
+					endY += 16;
+				}
 
-			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-				openField(oldStartX, startY, blankMap);
+			}
+
+			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				randomCounter++;
-				if (endX < 171) {
+				if (endX < 201) {
 					oldStartX = startX;
 					startX += 16;
 					endX += 16;
+
+
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 
 				}
-			}
-
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				openField(oldStartX, startY, blankMap);
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
 				if (startX > 101) {
 					oldStartX = startX;
 					startX -= 16;
@@ -376,18 +384,112 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 				}
-			}
-			else {
+
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
+				if (startY > 89) {
+					oldStartY = startY;
+					startY -= 16;
+					endY -= 16;
+				}
+
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
+					== 0) {
+				int m = (startX - 80) / 16;
+				int n = (startY - 80) / 16;
+				firstTimeCenter++;
+				if (firstTimeCenter == 1) {
+					randomCounter++;
+					while (solvedMap[m][n] == BOMB)
+						makeTable(solvedMap);
+				}
+				int ii = 0, jj = 0;
+
+				for (i = 0; i < SIZE; i++) {
+					for (j = 0; j < SIZE; j++) {
+						if (indicationMap[i][j] == 'x') {
+							ii = (i * 16) + 80;
+							jj = (j * 16) + 80;
+
+							if (solvedMap[i][j] == BLANK) {
+								drawMap(0, 0, ii, jj, 16, 16);
+								blankMap[i][j] = BLANK;
+							}
+							if (solvedMap[i][j] == NUM2) {
+								drawMap(32, 0, ii, jj, 16, 16);
+								blankMap[i][j] = NUM2;
+							}
+							if (solvedMap[i][j] == NUM1) {
+								drawMap(16, 0, ii, jj, 16, 16);
+								blankMap[i][j] = NUM1;
+							}
+							if (solvedMap[i][j] == NUM3) {
+								drawMap(48, 0, ii, jj, 16, 16);
+								blankMap[i][j] = NUM3;
+							}
+							if (solvedMap[i][j] == NUM4) {
+								drawMap(64, 0, ii, jj, 16, 16);
+								blankMap[i][j] = NUM4;
+							}
+						}
+					}
+				}
+
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0) { //flag
+
+				if (numOfFlags > 0 && numOfFlags <= NUMOFMINES) {
+					int x = (startX - 80) / 16;
+					int y = (startY - 80) / 16;
+					if (blankMap[x][y] != FLAG && blankMap[x][y] == BEG) {
+						drawMap(64, 16, startX - 1, startY - 1, 16, 16);
+
+						blankMap[x][y] = FLAG;
+
+						numOfFlags--;
+						//checks if the flag is in the right place
+						if (solvedMap[x][y] == BOMB) {
+							flagTrue++;
+							if (flagTrue == NUMOFMINES) {
+
+								endOfGame = 1;
+								drawMap(103, 54, 120, 54, 27, 26);
+							}
+						}
+
+					}
+					//prints out flag counter
+
+				}
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
+				if (numOfFlags < NUMOFMINES) {
+
+					int x = (startX - 80) / 16;
+					int y = (startY - 80) / 16;
+					if (blankMap[x][y] == FLAG) {
+						drawMap(80, 16, startX - 1, startY - 1, 16, 16);
+
+						blankMap[x][y] = BEG;
+
+						numOfFlags++;
+
+						if (solvedMap[x][y] == BOMB) {
+							flagTrue--;
+						}
+					}
+				}
+
+			} else {
 				btn_state = NOTHING_PRESSED;
 			}
-		}
-		else { // SOMETHING_PRESSED
-
-			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {}
-
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {}
-
-			else {
+		} else { // SOMETHING_PRESSED
+			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
+					== 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
+			} else {
 				btn_state = NOTHING_PRESSED;
 			}
 		}
@@ -437,40 +539,33 @@ int main() {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x0f0f0f);
+							+ i * 4, 0x0000ff);
 		}
 	}
 
-	//drawing a map (LEFT FIELDS)
-
+	//drawing a map
 	for (kolona = 0; kolona <6 ; kolona++) {
 		for (red = 0; red < 4; red++) {
 			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
 
-	//drawing a map (RIGHT FIELDS)
+
+			for (red = 1; red < 9; red++) {
+				drawMap(80, 16, 72 + red * 16, 60, 16, 16);
+			}
 
 	for (kolona = 0; kolona <6 ; kolona++) {
-		for (red = 5; red < 9; red++) {
-			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
-		}
+			for (red = 5; red < 9; red++) {
+				drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			}
 	}
-
-	//drawing a map (TOP FIELDS)
-
-	for (red = 1; red < 7; red++) {
-		drawMap(80, 16, 72 + red * 16, 60, 16, 16);
-	}
-
-
-	//drawing a map (BLANK FIELDS BETWEEN LEFT FIELDS AND FINAL LINE)
 
 	for (kolona = 7; kolona <8 ; kolona++) {
-		for (red = 0; red < 4; red++) {
-			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			for (red = 0; red < 4; red++) {
+				drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			}
 		}
-	}
 
 	//moving through the table
 	move();

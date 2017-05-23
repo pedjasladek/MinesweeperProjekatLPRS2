@@ -350,12 +350,12 @@ void move() {
 
 	while (endOfGame != 1) {
 
+		openField(oldStartX, startY, blankMap);
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
 
 
 			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-				openField(oldStartX, startY, blankMap);
 				randomCounter++;
 				if (endX < 171) {
 					oldStartX = startX;
@@ -368,7 +368,6 @@ void move() {
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				openField(oldStartX, startY, blankMap);
 				if (startX > 101) {
 					oldStartX = startX;
 					startX -= 16;
@@ -437,7 +436,7 @@ int main() {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x0f0f0f);
+							+ i * 4, 0x0000ff);
 		}
 	}
 

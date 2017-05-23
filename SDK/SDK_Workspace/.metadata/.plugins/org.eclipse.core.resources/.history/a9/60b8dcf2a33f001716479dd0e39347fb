@@ -350,25 +350,24 @@ void move() {
 
 	while (endOfGame != 1) {
 
+		openField(oldStartX, startY, blankMap);
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
 
 
 			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-				openField(oldStartX, startY, blankMap);
 				randomCounter++;
 				if (endX < 171) {
 					oldStartX = startX;
 					startX += 16;
 					endX += 16;
+
+
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 
 				}
-			}
-
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				openField(oldStartX, startY, blankMap);
+			}else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
 				if (startX > 101) {
 					oldStartX = startX;
 					startX -= 16;
@@ -376,18 +375,44 @@ void move() {
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 				}
-			}
-			else {
+
+			}else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0) { //flag
+
+				if (numOfFlags > 0 && numOfFlags <= NUMOFMINES) {
+
+
+				}
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
+				if (numOfFlags < NUMOFMINES) {
+
+					int x = (startX - 80) / 16;
+					int y = (startY - 80) / 16;
+					if (blankMap[x][y] == FLAG) {
+						drawMap(80, 16, startX - 1, startY - 1, 16, 16);
+
+						blankMap[x][y] = BEG;
+
+						numOfFlags++;
+
+						if (solvedMap[x][y] == BOMB) {
+							flagTrue--;
+						}
+					}
+				}
+
+			} else {
 				btn_state = NOTHING_PRESSED;
 			}
-		}
-		else { // SOMETHING_PRESSED
-
-			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {}
-
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {}
-
-			else {
+		} else { // SOMETHING_PRESSED
+			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
+					== 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW0) != 0) {
+			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
+			} else {
 				btn_state = NOTHING_PRESSED;
 			}
 		}
@@ -437,7 +462,7 @@ int main() {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x0f0f0f);
+							+ i * 4, 0x0000ff);
 		}
 	}
 

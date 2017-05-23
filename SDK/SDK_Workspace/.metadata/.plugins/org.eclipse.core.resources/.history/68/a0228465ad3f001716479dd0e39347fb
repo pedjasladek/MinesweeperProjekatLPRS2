@@ -339,73 +339,59 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 void move() {
 
-	typedef enum {NOTHING_PRESSED, SOMETHING_PRESSED} btn_state_t;
-	typedef enum {IDLE, LEFT_PRESSED, RIGHT_PRESSED} state_t;
-
-
 	int startX = 88, startY = 60, endX = 103, endY = 76;
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int x, y, ic, ib, i, j;
 	int prethodnoStanje;
 
+
+
+	typedef enum {
+		NOTHING_PRESSED, SOMETHING_PRESSED
+	} btn_state_t;
 	btn_state_t btn_state = NOTHING_PRESSED;
-	state_t state = IDLE;
 
 	makeTable(solvedMap);
 
-	while (endOfGame != 1) {
+	drawingCursor(startX, startY, endX, endY);
 
+	while (endOfGame != 1) {
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
 
-			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-				state = RIGHT_PRESSED;
-			}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				state = LEFT_PRESSED;
-			}else{
-				btn_state = NOTHING_PRESSED;
+			if(startX == 88 && startY == 60 && endX == 103 && endY == 76){
+				openField(oldStartX, startY, blankMap);
 			}
 
-		switch(state){
 
-			case IDLE:
-				drawingCursor(startX, startY, endX, endY);
+			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				openField(oldStartX, startY, blankMap);
-				break;
-
-			case LEFT_PRESSED:
-				if (startX > 101) {
-
-					oldStartX = startX;
-					startX -= 16;
-					endX -= 16;
-
-					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
-
-					if(startX == 88 && startY == 60 && endX == 103 && endY == 76){
-						state = IDLE;
-					}
-				}
-				break;
-
-			case RIGHT_PRESSED:
+				randomCounter++;
 				if (endX < 171) {
-
 					oldStartX = startX;
 					startX += 16;
 					endX += 16;
-
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 
-					if(startX == 88 && startY == 60 && endX == 103 && endY == 76){
-						state = IDLE;
-					}
 				}
-				break;
 			}
-		}else { // SOMETHING_PRESSED
+
+			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+				openField(oldStartX, startY, blankMap);
+				if (startX > 101) {
+					oldStartX = startX;
+					startX -= 16;
+					endX -= 16;
+					drawingCursor(startX, startY, endX, endY);
+					openField(oldStartX, startY, blankMap);
+				}
+			}
+			else {
+				btn_state = NOTHING_PRESSED;
+			}
+		}
+		else { // SOMETHING_PRESSED
 
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {}
 
@@ -415,7 +401,9 @@ void move() {
 				btn_state = NOTHING_PRESSED;
 			}
 		}
+
 	}
+
 }
 
 int main() {

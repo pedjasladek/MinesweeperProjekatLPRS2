@@ -31,7 +31,8 @@
  *   ps7_uart    115200 (configured by bootrom/bsp)
  *
  *
- *
+ *.
+ *.
  */
 
 #include <stdio.h>
@@ -98,25 +99,6 @@ void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) 
 
 //when the blank field is pressed, open all blank fields around it
 
-void clean(int x, int y, char resultTable[SIZE][SIZE],
-		char indicationMap[SIZE][SIZE]) {
-	int i, j;
-
-	indicationMap[x][y] = 'x';
-
-	if (resultTable[x][y] == BLANK) {
-		for (i = x - 1; i <= x + 1; i++) {
-			for (j = y - 1; j <= y + 1; j++) {
-				if (i >= 0 && j >= 0 && i < 9 && j < 9 && !(x == i && y == j)) {
-					if (indicationMap[i][j] == BLANK) {
-						clean(i, j, resultTable, indicationMap);
-					}
-				}
-
-			}
-		}
-	}
-}
 
 //function for opening selected field
 
@@ -149,7 +131,6 @@ void openField(int x, int y, char map[9][9]) {
 		drawMap(0, 0, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
 			blankMap[x1][y1] = BLANK;
-		clean(x1, y1, solvedMap, indicationMap);
 		for (i = 0; i < 9; i++) {
 			for (j = 0; j < 9; j++) {
 				xil_printf("%c", indicationMap[i][j]);
@@ -200,7 +181,7 @@ void makeTable(char temp[9][9]) {
 		}
 	}
 
-	//postavlja random mine
+/*	//postavlja random mine
 	while (numOfMines > 0) {
 		row = rand() % 9;
 		column = rand() % 9;
@@ -278,7 +259,7 @@ void makeTable(char temp[9][9]) {
 		}
 		xil_printf("\n");
 	}
-
+*/
 }
 
 //extracting pixel data from a picture for printing out on the display
@@ -355,7 +336,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 //function that controls switches and buttons
 
 void move() {
-	int startX = 81, startY = 81, endX = 96, endY = 96;
+	int startX =89, startY = 60, endX = 104, endY = 76;
 	int oldStartX, oldStartY, oldEndX, oldEndY;
 	int x, y, ic, ib, i, j;
 	int prethodnoStanje;
@@ -367,48 +348,47 @@ void move() {
 	makeTable(solvedMap);
 	drawingCursor(startX, startY, endX, endY);
 
+
 	while (endOfGame != 1) {
 
 		if (btn_state == NOTHING_PRESSED) {
 			btn_state = SOMETHING_PRESSED;
 			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & DOWN) == 0) {
-				if (endY < 224) {
+				if (endY < 76) {
+
 					oldStartY = startY;
 					oldEndY = endY;
 					startY += 16;
 					endY += 16;
-					drawingCursor(startX, startY, endX, endY);
-					openField(startX, oldStartY, blankMap);
 				}
 
 			}
 
 			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
 				randomCounter++;
-				if (endX < 224) {
+				if (endX < 201) {
 					oldStartX = startX;
 					startX += 16;
 					endX += 16;
+
+
 					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
+
 
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				if (startX > 81) {
+				if (startX > 101) {
 					oldStartX = startX;
 					startX -= 16;
 					endX -= 16;
 					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & UP) == 0) {
-				if (startY > 81) {
+				if (startY > 89) {
 					oldStartY = startY;
 					startY -= 16;
 					endY -= 16;
-					drawingCursor(startX, startY, endX, endY);
-					openField(startX, oldStartY, blankMap);
 				}
 
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER)
@@ -421,7 +401,6 @@ void move() {
 					while (solvedMap[m][n] == BOMB)
 						makeTable(solvedMap);
 				}
-				openField(startX, startY, solvedMap);
 				int ii = 0, jj = 0;
 
 				for (i = 0; i < SIZE; i++) {
@@ -477,39 +456,6 @@ void move() {
 
 					}
 					//prints out flag counter
-					switch (numOfFlags) {
-					case 9:
-						drawMap(116, 32, 168, 54, 13, 23);
-						break;
-					case 8:
-						drawMap(103, 32, 168, 54, 13, 23);
-						break;
-					case 7:
-						drawMap(90, 32, 168, 54, 13, 23);
-						break;
-					case 6:
-						drawMap(77, 32, 168, 54, 13, 23);
-						break;
-					case 5:
-						drawMap(64, 32, 168, 54, 14, 23);
-						break;
-					case 4:
-						drawMap(51, 32, 168, 54, 13, 23);
-						break;
-					case 3:
-						drawMap(38, 32, 168, 54, 13, 23);
-						break;
-					case 2:
-						drawMap(25, 32, 168, 54, 13, 23);
-						break;
-					case 1:
-						drawMap(13, 32, 168, 54, 13, 23);
-						break;
-					case 0:
-						drawMap(0, 32, 168, 54, 13, 23);
-						break;
-
-					}
 
 				}
 			} else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & SW1) != 0) {
@@ -526,39 +472,6 @@ void move() {
 
 						if (solvedMap[x][y] == BOMB) {
 							flagTrue--;
-						}
-
-						switch (numOfFlags) {
-						case 9:
-							drawMap(116, 32, 168, 54, 13, 23);
-							break;
-						case 8:
-							drawMap(103, 32, 168, 54, 13, 23);
-							break;
-						case 7:
-							drawMap(90, 32, 168, 54, 13, 23);
-							break;
-						case 6:
-							drawMap(77, 32, 168, 54, 13, 23);
-							break;
-						case 5:
-							drawMap(64, 32, 168, 54, 13, 23);
-							break;
-						case 4:
-							drawMap(51, 32, 168, 54, 13, 23);
-							break;
-						case 3:
-							drawMap(38, 32, 168, 54, 13, 23);
-							break;
-						case 2:
-							drawMap(25, 32, 168, 54, 13, 23);
-							break;
-						case 1:
-							drawMap(13, 32, 168, 54, 13, 23);
-							break;
-						case 0:
-							drawMap(0, 32, 168, 54, 13, 23);
-							break;
 						}
 					}
 				}
@@ -589,19 +502,11 @@ int main() {
 	int j, p, r;
 	inc1 = 0;
 	inc2 = 0;
-	numOfFlags = NUMOFMINES;
-	flagTrue = 0;
-	numOfMines = NUMOFMINES;
 	firstTimeCenter = 0;
 
 	init_platform();
 
-	//helping map for cleaning the table when blank button is pressed
-	for (p = 0; p < SIZE; p++) {
-		for (r = 0; r < SIZE; r++) {
-			indicationMap[p][r] = BLANK;
-		}
-	}
+
 
 	//map which contains all the moves of the player
 	for (i = 0; i < 9; i++) {
@@ -619,7 +524,7 @@ int main() {
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x0C, 0xff); // font size       3
 	VGA_PERIPH_MEM_mWriteMemory(
-			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x10, 0xFFFFFF); // foreground 4
+			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x10, 0x000000); // foreground 4
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x14, 0x0000FF); // background color 5
 	VGA_PERIPH_MEM_mWriteMemory(
@@ -627,31 +532,39 @@ int main() {
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x20, 1);
 
-	//black background
+	//black background+
 	for (x = 0; x < 320; x++) {
 		for (y = 0; y < 240; y++) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0x0000ff);
 		}
 	}
 
 	//drawing a map
-	for (kolona = 0; kolona < 9; kolona++) {
-		for (red = 0; red < 9; red++) {
+	for (kolona = 0; kolona <6 ; kolona++) {
+		for (red = 0; red < 4; red++) {
 			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
 
-	//smiley
-	drawMap(0, 55, 120, 54, 27, 26);
 
-	//flag
-	drawMap(65, 17, 154, 60, 13, 13);
+			for (red = 1; red < 9; red++) {
+				drawMap(80, 16, 72 + red * 16, 60, 16, 16);
+			}
 
-	//counter
-	drawMap(116, 32, 168, 54, 14, 23);
+	for (kolona = 0; kolona <6 ; kolona++) {
+			for (red = 5; red < 9; red++) {
+				drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			}
+	}
+
+	for (kolona = 7; kolona <8 ; kolona++) {
+			for (red = 0; red < 4; red++) {
+				drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			}
+		}
 
 	//moving through the table
 	move();

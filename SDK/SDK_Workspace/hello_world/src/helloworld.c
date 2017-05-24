@@ -63,6 +63,7 @@
 //BEG---unpened field
 #define BEG '@'
 
+int brojac = 0;
 int endOfGame;
 int inc1;
 int inc2;
@@ -110,7 +111,7 @@ void openField(int x, int y, char map[9][9]) {
 	y1 = (y - 80) / 16;
 
 	switch (map[x1][y1]) {
-	case NUM1:
+	/*case NUM1:
 		drawMap(16, 0, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
 			blankMap[x1][y1] = NUM1;
@@ -129,7 +130,7 @@ void openField(int x, int y, char map[9][9]) {
 		break;
 
 	case BLANK:
-		drawMap(6, 6, x - 1, y - 1, 16, 16);
+		drawMap(0, 0, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
 			blankMap[x1][y1] = BLANK;
 		for (i = 0; i < 9; i++) {
@@ -154,17 +155,25 @@ void openField(int x, int y, char map[9][9]) {
 		drawMap(32, 16, x - 1, y - 1, 16, 16);
 		drawMap(77, 54, 120, 54, 27, 26);
 		break;
+*/
 	case '@':
-		drawMap(80, 16, x - 1, y - 1, 16, 16);
-		if (map != blankMap)
-			blankMap[x1][y1] = BEG;
-		break;
+		if(brojac==0){
+		drawMap(brojac, 0, x-1, y-1, 16, 16);
+		brojac+=16;
+		}
+		if (brojac==96){
+			drawMap(brojac, 0, x-1, y-1, 16, 16);
+				brojac-=16;
+		}
+		drawMap(brojac, 0, x-1, y-1, 16, 16);
 
+		break;
+/*
 	case '#':
 		drawMap(64, 16, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
 			blankMap[x1][y1] = FLAG;
-		break;
+		break;*/
 	}
 }
 
@@ -266,7 +275,7 @@ void makeTable(char temp[9][9]) {
 
 //extracting pixel data from a picture for printing out on the display
 
-void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
+/*void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 	int ox, oy, oi, iy, ix, ii;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
@@ -282,6 +291,34 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 					* minesweeper_sprites.bytes_per_pixel + 1] >> 5;
 			B = minesweeper_sprites.pixel_data[ii
 					* minesweeper_sprites.bytes_per_pixel + 2] >> 5;
+			R <<= 6;
+			G <<= 3;
+			RGB = R | G | B;
+
+			VGA_PERIPH_MEM_mWriteMemory(
+					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
+							+ oi * 4, RGB);
+		}
+	}
+
+}
+*/
+void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
+	int ox, oy, oi, iy, ix, ii;
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			ox = out_x + x;
+			oy = out_y + y;
+			oi = oy * 320 + ox;
+			ix = in_x + x;
+			iy = in_y + y;
+			ii = iy * gimp_image.width + ix;
+			R = gimp_image.pixel_data[ii
+					* gimp_image.bytes_per_pixel] >> 5;
+			G = gimp_image.pixel_data[ii
+					* gimp_image.bytes_per_pixel + 1] >> 5;
+			B = gimp_image.pixel_data[ii
+					* gimp_image.bytes_per_pixel + 2] >> 5;
 			R <<= 6;
 			G <<= 3;
 			RGB = R | G | B;
@@ -346,7 +383,7 @@ void move() {
 	} state_t;
 
 	int startX = 105, startY = 61, endX = 119, endY = 75;
-	int oldStartX;
+	int oldStartX,oldEndX;
 
 	state_t state = IDLE;
 	state_t btn_old_state = IDLE;
@@ -373,6 +410,7 @@ void move() {
 				break;
 
 			case LEFT_PRESSED:
+
 				if (startX > 117) {
 
 					oldStartX = startX;
@@ -380,19 +418,21 @@ void move() {
 					endX -= 16;
 
 					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
+					drawMap(oldStartX - 105,0,oldStartX - 1 , startY-1, 16, 16);
 				}
 
 				break;
 
 			case RIGHT_PRESSED:
+
 				if (endX < 187) {
 					oldStartX = startX;
+					oldEndX = endX;
 					startX += 16;
 					endX += 16;
 
 					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
+					drawMap(oldStartX- 105, 0,oldStartX - 1, startY-1, 16, 16);
 
 				}
 				break;
@@ -458,7 +498,6 @@ void move_cursor2() {
 
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
-
 				}
 				break;
 			}
@@ -527,9 +566,10 @@ int main() {
 	}
 
 	//drawing a map (TOP FIELDS)
-
+	int i = 0;
 	for (kolona = 0; kolona < 6; kolona++) {
-		drawMap(80, 16, 88 + 16 + kolona * 16, 60, 16, 16);
+		drawMap(i, 0, 88 + 16 + kolona * 16, 60, 16, 16);
+		i +=16;
 	}
 
 

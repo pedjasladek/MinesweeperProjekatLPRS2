@@ -103,6 +103,7 @@ void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) 
 //function for opening selected field
 
 void openField(int x, int y, char map[9][9]) {
+
 	int i, j;
 	int x1, y1;
 	x1 = (x - 80) / 16;
@@ -128,7 +129,7 @@ void openField(int x, int y, char map[9][9]) {
 		break;
 
 	case BLANK:
-		drawMap(0, 0, x - 1, y - 1, 16, 16);
+		drawMap(6, 6, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
 			blankMap[x1][y1] = BLANK;
 		for (i = 0; i < 9; i++) {
@@ -168,6 +169,7 @@ void openField(int x, int y, char map[9][9]) {
 }
 
 //function that generates random game map
+
 void makeTable(char temp[9][9]) {
 	int numOfMines = NUMOFMINES, row, column, i, j, m, surroundingMines = 0;
 	char table[9][9];
@@ -296,7 +298,7 @@ void drawMap(int in_x, int in_y, int out_x, int out_y, int width, int height) {
 void drawingCursor(int startX, int startY, int endX, int endY) {
 
 	for (x = startX; x < endX; x++) {
-		for (y = startY; y < startY + 2; y++) {
+		for (y = startY; y < startY + 1; y++) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
@@ -305,7 +307,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 	}
 
 	for (x = startX; x < endX; x++) {
-		for (y = endY - 2; y < endY; y++) {
+		for (y = endY - 1; y < endY; y++) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
@@ -313,7 +315,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 		}
 	}
 
-	for (x = startX; x < startX + 2; x++) {
+	for (x = startX; x < startX + 1; x++) {
 		for (y = startY; y < endY; y++) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
@@ -322,7 +324,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 		}
 	}
 
-	for (x = endX - 2; x < endX; x++) {
+	for (x = endX - 1; x < endX; x++) {
 		for (y = startY; y < endY; y++) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
@@ -333,67 +335,136 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 }
 
-//function that controls switches and buttons
+//	Function that controls movement of cursor
 
 void move() {
-	int startX =89, startY = 60, endX = 104, endY = 76;
-	int oldStartX, oldStartY, oldEndX, oldEndY;
-	int x, y, ic, ib, i, j;
-	int prethodnoStanje;
+
 	typedef enum {
-		NOTHING_PRESSED, SOMETHING_PRESSED
-	} btn_state_t;
-	btn_state_t btn_state = NOTHING_PRESSED;
+		IDLE,
+		LEFT_PRESSED,
+		RIGHT_PRESSED
+	} state_t;
+
+	int startX = 105, startY = 61, endX = 119, endY = 75;
+	int oldStartX;
+
+	state_t state = IDLE;
+	state_t btn_old_state = IDLE;
+
+	drawingCursor(startX, startY, endX, endY);
 
 	makeTable(solvedMap);
 
-
 	while (endOfGame != 1) {
 
-		if (btn_state == NOTHING_PRESSED) {
-			btn_state = SOMETHING_PRESSED;
+		if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+			state = RIGHT_PRESSED;
+		}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+			state = LEFT_PRESSED;
+		}else{
+			state = IDLE;
+		}
 
+		if(state != btn_old_state){
 
-			if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-				openField(oldStartX, startY, blankMap);
-				randomCounter++;
-				if (endX < 171) {
-					oldStartX = startX;
-					startX += 16;
-					endX += 16;
-					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
+			switch(state){
 
-				}
-			}
+			case IDLE:
+				break;
 
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-				openField(oldStartX, startY, blankMap);
-				if (startX > 101) {
+			case LEFT_PRESSED:
+				if (startX > 117) {
+
 					oldStartX = startX;
 					startX -= 16;
 					endX -= 16;
+
 					drawingCursor(startX, startY, endX, endY);
 					openField(oldStartX, startY, blankMap);
 				}
-			}
-			else {
-				btn_state = NOTHING_PRESSED;
+
+				break;
+
+			case RIGHT_PRESSED:
+				if (endX < 187) {
+					oldStartX = startX;
+					startX += 16;
+					endX += 16;
+
+					drawingCursor(startX, startY, endX, endY);
+					openField(oldStartX, startY, blankMap);
+
+				}
+				break;
 			}
 		}
-		else { // SOMETHING_PRESSED
-
-			if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {}
-
-			else if ((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {}
-
-			else {
-				btn_state = NOTHING_PRESSED;
-			}
-		}
-
+		btn_old_state = state;
 	}
+}
 
+void move_cursor2() {
+
+	typedef enum {
+		IDLE,
+		LEFT_PRESSED,
+		RIGHT_PRESSED
+	} state_t;
+
+	int startX = 80, startY = 80, endX = 119, endY = 75;
+	int oldStartX;
+
+	state_t state = IDLE;
+	state_t btn_old_state = IDLE;
+
+	drawingCursor(startX, startY, endX, endY);
+
+	makeTable(solvedMap);
+
+	while (endOfGame != 1) {
+
+		if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
+			state = RIGHT_PRESSED;
+		}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
+			state = LEFT_PRESSED;
+		}else{
+			state = IDLE;
+		}
+
+		if(state != btn_old_state){
+
+			switch(state){
+
+			case IDLE:
+				break;
+
+			case LEFT_PRESSED:
+				if (startX > 117) {
+
+					oldStartX = startX;
+					startX -= 16;
+					endX -= 16;
+
+					drawingCursor(startX, startY, endX, endY);
+					openField(oldStartX, startY, blankMap);
+				}
+
+				break;
+
+			case RIGHT_PRESSED:
+				if (endX < 187) {
+					oldStartX = startX;
+					startX += 16;
+					endX += 16;
+
+					drawingCursor(startX, startY, endX, endY);
+					openField(oldStartX, startY, blankMap);
+
+				}
+				break;
+			}
+		}
+		btn_old_state = state;
+	}
 }
 
 int main() {
@@ -404,8 +475,6 @@ int main() {
 	firstTimeCenter = 0;
 
 	init_platform();
-
-
 
 	//map which contains all the moves of the player
 	for (i = 0; i < 9; i++) {
@@ -459,8 +528,8 @@ int main() {
 
 	//drawing a map (TOP FIELDS)
 
-	for (red = 1; red < 7; red++) {
-		drawMap(80, 16, 72 + red * 16, 60, 16, 16);
+	for (kolona = 0; kolona < 6; kolona++) {
+		drawMap(80, 16, 88 + 16 + kolona * 16, 60, 16, 16);
 	}
 
 

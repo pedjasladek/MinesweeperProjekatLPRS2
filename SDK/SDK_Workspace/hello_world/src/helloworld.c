@@ -339,7 +339,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -348,7 +348,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -357,7 +357,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -366,7 +366,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -432,7 +432,7 @@ void move() {
 					endX += 16;
 
 					drawingCursor(startX, startY, endX, endY);
-					drawMap(oldStartX- 105, 0,oldStartX - 1, startY-1, 16, 16);
+					drawMap(oldStartX - 105, 0,oldStartX - 1, startY-1, 16, 16);
 
 				}
 				break;
@@ -442,69 +442,6 @@ void move() {
 	}
 }
 
-void move_cursor2() {
-
-	typedef enum {
-		IDLE,
-		LEFT_PRESSED,
-		RIGHT_PRESSED
-	} state_t;
-
-	int startX = 80, startY = 80, endX = 119, endY = 75;
-	int oldStartX;
-
-	state_t state = IDLE;
-	state_t btn_old_state = IDLE;
-
-	drawingCursor(startX, startY, endX, endY);
-
-	makeTable(solvedMap);
-
-	while (endOfGame != 1) {
-
-		if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & RIGHT) == 0) {
-			state = RIGHT_PRESSED;
-		}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
-			state = LEFT_PRESSED;
-		}else{
-			state = IDLE;
-		}
-
-		if(state != btn_old_state){
-
-			switch(state){
-
-			case IDLE:
-				break;
-
-			case LEFT_PRESSED:
-				if (startX > 117) {
-
-					oldStartX = startX;
-					startX -= 16;
-					endX -= 16;
-
-					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
-				}
-
-				break;
-
-			case RIGHT_PRESSED:
-				if (endX < 187) {
-					oldStartX = startX;
-					startX += 16;
-					endX += 16;
-
-					drawingCursor(startX, startY, endX, endY);
-					openField(oldStartX, startY, blankMap);
-				}
-				break;
-			}
-		}
-		btn_old_state = state;
-	}
-}
 
 int main() {
 

@@ -87,20 +87,20 @@ char indicationMap[9][9];
 void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
 
 
-	int i, j, ii, jj;
+	/*int i, j, ii, jj;
 	for (i = 0; i < SIZE; i++) {
 		for (j = 0; j < SIZE; j++) {
 			ii = (i * 16) + 80;
 			jj = (j * 16) + 80;
 			if (blankTable[i][j] == FLAG) {
 				if (solvedMap[i][j] != BOMB) {
-					drawMap(16, 0, ii, jj, 16, 16);
+					drawMap(16, 16, ii, jj, 16, 16);
 				}
 			} else if (blankTable[i][j] != FLAG && solvedMap[i][j] == BOMB) {
-				drawMap(0, 0, ii, jj, 16, 16);
+				drawMap(0, 16, ii, jj, 16, 16);
 			}
 		}
-	}
+	}*/
 }
 
 //when the blank field is pressed, open all blank fields around it
@@ -452,7 +452,7 @@ void move() {
 				brojac3++;
 				if(brojac3 == 25){
 					endOfGame = 1;
-					printOutEndOfGame(blankMap, solvedMap);
+
 					break;
 				}
 				else if(brojac1 < 64) {

@@ -66,7 +66,6 @@
 int brojac = 0;
 int brojac1 = 0;
 int brojac2 = 0;
-int brojac3 = 0;
 int endOfGame;
 int inc1;
 int inc2;
@@ -85,8 +84,6 @@ char indicationMap[9][9];
 
 //end of game
 void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
-
-
 	int i, j, ii, jj;
 	for (i = 0; i < SIZE; i++) {
 		for (j = 0; j < SIZE; j++) {
@@ -94,10 +91,10 @@ void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) 
 			jj = (j * 16) + 80;
 			if (blankTable[i][j] == FLAG) {
 				if (solvedMap[i][j] != BOMB) {
-					drawMap(16, 0, ii, jj, 16, 16);
+					drawMap(16, 16, ii, jj, 16, 16);
 				}
 			} else if (blankTable[i][j] != FLAG && solvedMap[i][j] == BOMB) {
-				drawMap(0, 0, ii, jj, 16, 16);
+				drawMap(0, 16, ii, jj, 16, 16);
 			}
 		}
 	}
@@ -449,21 +446,14 @@ void move() {
 				break;
 
 			case CENTER_PRESSED:
-				brojac3++;
-				if(brojac3 == 25){
-					endOfGame = 1;
-					printOutEndOfGame(blankMap, solvedMap);
-					break;
-				}
-				else if(brojac1 < 64) {
+				if(brojac1 < 64) {
 					drawMap(brojac, 0, 80 + brojac1 * 16 , 80 + brojac2 * 16, 16, 16);
 					brojac1++;
 					if(brojac1 == 4){
-						brojac1 = 0;
 						brojac2++;
 					}
 				}
-				break;
+
 			}
 		}
 		btn_old_state = state;
@@ -545,6 +535,8 @@ int main() {
 			drawMap(128, 0, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
+
+	//moving through the table
 
 	move();
 

@@ -87,20 +87,20 @@ char indicationMap[9][9];
 void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
 
 
-	int i, j, ii, jj;
+	/*int i, j, ii, jj;
 	for (i = 0; i < SIZE; i++) {
 		for (j = 0; j < SIZE; j++) {
 			ii = (i * 16) + 80;
 			jj = (j * 16) + 80;
 			if (blankTable[i][j] == FLAG) {
 				if (solvedMap[i][j] != BOMB) {
-					drawMap(16, 0, ii, jj, 16, 16);
+					drawMap(16, 16, ii, jj, 16, 16);
 				}
 			} else if (blankTable[i][j] != FLAG && solvedMap[i][j] == BOMB) {
-				drawMap(0, 0, ii, jj, 16, 16);
+				drawMap(0, 16, ii, jj, 16, 16);
 			}
 		}
-	}
+	}*/
 }
 
 //when the blank field is pressed, open all blank fields around it
@@ -452,7 +452,6 @@ void move() {
 				brojac3++;
 				if(brojac3 == 25){
 					endOfGame = 1;
-					printOutEndOfGame(blankMap, solvedMap);
 					break;
 				}
 				else if(brojac1 < 64) {
@@ -480,6 +479,11 @@ int main() {
 
 	init_platform();
 
+	unsigned char string_s[] = "LUDILO MOZGA\n";
+	// unsigned char string_s1[]="MILA\n";
+	int k = 0;
+	unsigned int brojac=0;
+
 	//map which contains all the moves of the player
 	for (i = 0; i < 9; i++) {
 		for (j = 0; j < 9; j++) {
@@ -503,6 +507,11 @@ int main() {
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x18, 0xFF0000); // frame color      6
 	VGA_PERIPH_MEM_mWriteMemory(
 			XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + 0x20, 1);
+
+	clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+	clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+	draw_square(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+	set_cursor(350);
 
 	//black background+
 	for (x = 0; x < 320; x++) {
@@ -545,6 +554,36 @@ int main() {
 			drawMap(128, 0, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
+
+	clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+	clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+
+
+	while (1) {
+
+		if (brojac == 800000) {
+
+			brojac = 0;
+
+			clear_text_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+			clear_graphics_screen(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+			set_cursor(k);
+			draw_square(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR);
+			set_cursor(k + 3);
+			//	print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, string_s1,4);
+			set_cursor(k + 12);
+			print_string(XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR, string_s,
+					12);
+
+			++k;
+		if (k == 4500) {
+			k = 0;
+		}
+	    }else
+	       		brojac++;
+	       }
+
+	//moving through the table
 
 	move();
 

@@ -64,9 +64,6 @@
 #define BEG '@'
 
 int brojac = 0;
-int brojac1 = 0;
-int brojac2 = 0;
-int brojac3 = 0;
 int endOfGame;
 int inc1;
 int inc2;
@@ -85,8 +82,6 @@ char indicationMap[9][9];
 
 //end of game
 void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) {
-
-
 	int i, j, ii, jj;
 	for (i = 0; i < SIZE; i++) {
 		for (j = 0; j < SIZE; j++) {
@@ -94,10 +89,10 @@ void printOutEndOfGame(char blankTable[SIZE][SIZE], char solvedMap[SIZE][SIZE]) 
 			jj = (j * 16) + 80;
 			if (blankTable[i][j] == FLAG) {
 				if (solvedMap[i][j] != BOMB) {
-					drawMap(16, 0, ii, jj, 16, 16);
+					drawMap(16, 16, ii, jj, 16, 16);
 				}
 			} else if (blankTable[i][j] != FLAG && solvedMap[i][j] == BOMB) {
-				drawMap(0, 0, ii, jj, 16, 16);
+				drawMap(0, 16, ii, jj, 16, 16);
 			}
 		}
 	}
@@ -160,7 +155,7 @@ void openField(int x, int y, char map[9][9]) {
 		drawMap(32, 16, x - 1, y - 1, 16, 16);
 		drawMap(77, 54, 120, 54, 27, 26);
 		break;
-
+*/
 	case '@':
 		if(brojac==0){
 		drawMap(brojac, 0, x-1, y-1, 16, 16);
@@ -173,7 +168,7 @@ void openField(int x, int y, char map[9][9]) {
 		drawMap(brojac, 0, x-1, y-1, 16, 16);
 
 		break;
-
+/*
 	case '#':
 		drawMap(64, 16, x - 1, y - 1, 16, 16);
 		if (map != blankMap)
@@ -344,7 +339,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -353,7 +348,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -362,7 +357,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -371,7 +366,7 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 			i = y * 320 + x;
 			VGA_PERIPH_MEM_mWriteMemory(
 					XPAR_VGA_PERIPH_MEM_0_S_AXI_MEM0_BASEADDR + GRAPHICS_MEM_OFF
-							+ i * 4, 0x000000);
+							+ i * 4, 0xfff0ff);
 		}
 	}
 
@@ -384,13 +379,11 @@ void move() {
 	typedef enum {
 		IDLE,
 		LEFT_PRESSED,
-		RIGHT_PRESSED,
-		CENTER_PRESSED
+		RIGHT_PRESSED
 	} state_t;
 
 	int startX = 105, startY = 61, endX = 119, endY = 75;
 	int oldStartX,oldEndX;
-	int X = 80, Y = 80,XX,YY;
 
 	state_t state = IDLE;
 	state_t btn_old_state = IDLE;
@@ -405,8 +398,6 @@ void move() {
 			state = RIGHT_PRESSED;
 		}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & LEFT) == 0) {
 			state = LEFT_PRESSED;
-		}else if((Xil_In32(XPAR_MY_PERIPHERAL_0_BASEADDR) & CENTER) == 0) {
-			state = CENTER_PRESSED;
 		}else{
 			state = IDLE;
 		}
@@ -425,7 +416,6 @@ void move() {
 					oldStartX = startX;
 					startX -= 16;
 					endX -= 16;
-					brojac -=16;
 
 					drawingCursor(startX, startY, endX, endY);
 					drawMap(oldStartX - 105,0,oldStartX - 1 , startY-1, 16, 16);
@@ -440,28 +430,10 @@ void move() {
 					oldEndX = endX;
 					startX += 16;
 					endX += 16;
-					brojac +=16;
 
 					drawingCursor(startX, startY, endX, endY);
 					drawMap(oldStartX - 105, 0,oldStartX - 1, startY-1, 16, 16);
 
-				}
-				break;
-
-			case CENTER_PRESSED:
-				brojac3++;
-				if(brojac3 == 25){
-					endOfGame = 1;
-					printOutEndOfGame(blankMap, solvedMap);
-					break;
-				}
-				else if(brojac1 < 64) {
-					drawMap(brojac, 0, 80 + brojac1 * 16 , 80 + brojac2 * 16, 16, 16);
-					brojac1++;
-					if(brojac1 == 4){
-						brojac1 = 0;
-						brojac2++;
-					}
 				}
 				break;
 			}
@@ -518,7 +490,7 @@ int main() {
 
 	for (kolona = 0; kolona <6 ; kolona++) {
 		for (red = 0; red < 4; red++) {
-			drawMap(128, 0, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
 
@@ -526,7 +498,7 @@ int main() {
 
 	for (kolona = 0; kolona <6 ; kolona++) {
 		for (red = 5; red < 9; red++) {
-			drawMap(128, 0, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
 
@@ -542,10 +514,11 @@ int main() {
 
 	for (kolona = 7; kolona <8 ; kolona++) {
 		for (red = 0; red < 4; red++) {
-			drawMap(128, 0, 80 + red * 16, 80 + kolona * 16, 16, 16);
+			drawMap(80, 16, 80 + red * 16, 80 + kolona * 16, 16, 16);
 		}
 	}
 
+	//moving through the table
 	move();
 
 	cleanup_platform();

@@ -543,7 +543,7 @@ void move() {
 							Crvene++;
 						}
 						brojac4++;
-
+						Zute--;
 
 
 					}

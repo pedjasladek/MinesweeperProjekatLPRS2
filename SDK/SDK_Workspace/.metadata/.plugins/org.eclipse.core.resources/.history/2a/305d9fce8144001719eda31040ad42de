@@ -68,7 +68,6 @@ int brojac1 = 0;		//X pozicija gde ce se nacrtati znak u levim poljima
 int brojac2 = 0;		//Y pozicija gde ce se nacrtati znak u levim poljima
 int brojac3 = 0;		//Brojac za leva 24 polja
 int brojac4 = 0;
-int finish_itterator = 0;
 
 int endOfGame;
 int inc1;
@@ -87,21 +86,7 @@ int Herc = 48;
 int Karo = 64;
 int Zvezda = 80;
 
-int Skocko_count = 0;
-int Tref_count  = 0;
-int Pik_count  = 0;
-int Herc_count  = 0;
-int Karo_count = 0;
-int Zvezda_count  = 0;
-
-int Zute = 0;
-int Crvene = 0;
-int draw_crvene = 0;
-int draw_zute = 0;
-
 int resenje_niz[4];
-int colors_itteratorX = 5;
-int colors_itteratorY = 0;
 
 
 //map that is hidden from the user-it contains the solution
@@ -410,33 +395,12 @@ void move() {
 
 	int startX = 105, startY = 61, endX = 119, endY = 75;
 	int oldStartX, oldEndX;
-	int X = 80, Y = 80, XX, YY, i;
+	int X = 80, Y = 80, XX, YY;
 
 	resenje_niz[0] = 64;
     resenje_niz[1] = 64;
 	resenje_niz[2] = 80;
 	resenje_niz[3] = 32;
-
-	for(i = 0; i < 4; i++){
-		if(resenje_niz[i] == 0){
-			Skocko_count++;
-		}
-		else if(resenje_niz[i] == 16){
-			Tref_count++;
-		}
-		else if(resenje_niz[i] == 32){
-			Pik_count++;
-		}
-		else if(resenje_niz[i] == 48){
-			Herc_count++;
-		}
-		else if(resenje_niz[i] == 64){
-			Karo_count++;
-		}
-		else if(resenje_niz[i] == 80){
-			Zvezda_count++;
-		}
-	}
 
 
 	state_t state = IDLE;
@@ -504,115 +468,35 @@ void move() {
 					drawMap(brojac, 0, 80 + brojac1 * 16, 80 + brojac2 * 16, 16,
 							16);
 
+					brojac1++;
+
 					if (brojac3 == 23 || brojac4 == 4) {
 						endOfGame = 1;
 						//printOutEndOfGame(blankMap, solvedMap);
 						for (kolona = 7; kolona < 8; kolona++) {
-							for (red = 0; red < 4; red++, finish_itterator++) {
-								drawMap(resenje_niz[finish_itterator], 0, 80 + red * 16,
+							for (red = 0; red < 4; red++) {
+								drawMap(32, 0, 80 + red * 16,
 										80 + kolona * 16, 16, 16);
+								i++;
 							}
 						}
 					}
 
 					brojac3++;
 
-					if ((brojac == resenje_niz[0] && brojac1 == 0)|| (brojac == resenje_niz[1] && brojac1 == 1)|| (brojac == resenje_niz[2] && brojac1 == 2)|| (brojac == resenje_niz[3] && brojac1 == 3)) {
-						if(brojac == 0 && Skocko_count != 0){
-							Skocko_count--;
-							Crvene++;
-						}
-						else if(brojac == 16 && Tref_count != 0){
-							Tref_count--;
-							Crvene++;
-						}
-						else if(brojac == 32 && Pik_count != 0){
-							Pik_count--;
-							Crvene++;
-						}
-						else if(brojac == 48 && Herc_count != 0){
-							Herc_count--;
-							Crvene++;
-						}
-						else if(brojac == 64 && Karo_count != 0){
-							Karo_count--;
-							Crvene++;
-						}
-						else if(brojac == 80 && Zvezda_count != 0){
-							Zvezda_count--;
-							Crvene++;
-						}
+					if ((brojac == Karo && brojac1 == 0)
+							|| (brojac == Karo && brojac1 == 1)
+							|| (brojac == Zvezda && brojac1 == 2)
+							|| (brojac == Pik && brojac1 == 3)) {
 						brojac4++;
-
-
-
-					}
-					 if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
-						if(brojac == 0 && Skocko_count != 0){
-							Skocko_count--;
-							Zute++;
-						}
-						else if(brojac == 16 && Tref_count != 0){
-							Tref_count--;
-							Zute++;
-						}
-						else if(brojac == 32 && Pik_count != 0){
-							Pik_count--;
-							Zute++;
-						}
-						else if(brojac == 48 && Herc_count != 0){
-							Herc_count--;
-							Zute++;
-						}
-						else if(brojac == 64 && Karo_count != 0){
-							Karo_count--;
-							Zute++;
-						}
-						else if(brojac == 80 && Zvezda_count != 0){
-							Zvezda_count--;
-							Zute++;
-						}
-
-
 					}
 
-					brojac1++;
 
 					if (brojac1 == 4) {
-
-						while(Crvene != 0){
-
-						draw_crvene = Crvene + 5;
-
-							for(colors_itteratorX; colors_itteratorX < draw_crvene; colors_itteratorX++){
-								drawMap(96, 0, 80 + colors_itteratorX * 16, 80 + colors_itteratorY * 16, 16, 16);
-								Crvene--;
-							}
-
-						}
-
-
-						while(Zute != 0){
-
-						draw_zute = Zute + draw_crvene;
-
-							for(colors_itteratorX; colors_itteratorX < draw_zute; colors_itteratorX++){
-								drawMap(112, 0, 80 + colors_itteratorX * 16, 80 + colors_itteratorY * 16, 16, 16);
-								Zute--;
-							}
-
-						}
-
-
-						Crvene = 0;
-						Zute = 0;
 						brojac4 = 0;
 						brojac1 = 0;
 						brojac2++;
-						colors_itteratorX = 5;
-						colors_itteratorY++;
 					}
-
 				}
 
 				break;

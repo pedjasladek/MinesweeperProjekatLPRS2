@@ -544,10 +544,8 @@ void move() {
 						}
 						brojac4++;
 
-
-
 					}
-					 if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
+					else if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
 						if(brojac == 0 && Skocko_count != 0){
 							Skocko_count--;
 							Zute++;

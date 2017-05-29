@@ -98,6 +98,7 @@ int Zute = 0;
 int Crvene = 0;
 int draw_crvene = 0;
 int draw_zute = 0;
+int crvene_provera = 4;
 
 int resenje_niz[4];
 int colors_itteratorX = 5;
@@ -543,11 +544,11 @@ void move() {
 							Crvene++;
 						}
 						brojac4++;
-
-
+						crvene_provera--;
 
 					}
-					 if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
+					if()
+					if ((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
 						if(brojac == 0 && Skocko_count != 0){
 							Skocko_count--;
 							Zute++;
@@ -603,7 +604,7 @@ void move() {
 
 						}
 
-
+						crvene_provera = 4;
 						Crvene = 0;
 						Zute = 0;
 						brojac4 = 0;

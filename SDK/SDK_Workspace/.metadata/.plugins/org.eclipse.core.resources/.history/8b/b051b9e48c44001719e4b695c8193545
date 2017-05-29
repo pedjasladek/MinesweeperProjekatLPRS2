@@ -518,57 +518,33 @@ void move() {
 					brojac3++;
 
 					if ((brojac == resenje_niz[0] && brojac1 == 0)|| (brojac == resenje_niz[1] && brojac1 == 1)|| (brojac == resenje_niz[2] && brojac1 == 2)|| (brojac == resenje_niz[3] && brojac1 == 3)) {
-						if(brojac == 0 && Skocko_count != 0){
-							Skocko_count--;
-							Crvene++;
-						}
-						else if(brojac == 16 && Tref_count != 0){
-							Tref_count--;
-							Crvene++;
-						}
-						else if(brojac == 32 && Pik_count != 0){
-							Pik_count--;
-							Crvene++;
-						}
-						else if(brojac == 48 && Herc_count != 0){
-							Herc_count--;
-							Crvene++;
-						}
-						else if(brojac == 64 && Karo_count != 0){
-							Karo_count--;
-							Crvene++;
-						}
-						else if(brojac == 80 && Zvezda_count != 0){
-							Zvezda_count--;
-							Crvene++;
-						}
+
+						Crvene++;
 						brojac4++;
 
-
-
 					}
-					 if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
-						if(brojac == 0 && Skocko_count != 0){
+					if ((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
+						if(resenje_niz[i] == 0 && Skocko_count != 0){
 							Skocko_count--;
 							Zute++;
 						}
-						else if(brojac == 16 && Tref_count != 0){
+						else if(resenje_niz[i] == 16 && Tref_count != 0){
 							Tref_count--;
 							Zute++;
 						}
-						else if(brojac == 32 && Pik_count != 0){
+						else if(resenje_niz[i] == 32 && Pik_count != 0){
 							Pik_count--;
 							Zute++;
 						}
-						else if(brojac == 48 && Herc_count != 0){
+						else if(resenje_niz[i] == 48 && Herc_count != 0){
 							Herc_count--;
 							Zute++;
 						}
-						else if(brojac == 64 && Karo_count != 0){
+						else if(resenje_niz[i] == 64 && Karo_count != 0){
 							Karo_count--;
 							Zute++;
 						}
-						else if(brojac == 80 && Zvezda_count != 0){
+						else if(resenje_niz[i] == 80 && Zvezda_count != 0){
 							Zvezda_count--;
 							Zute++;
 						}

@@ -613,7 +613,6 @@ void move() {
 						}
 
 						Zute = Zute_temp - Crvene;
-
 						while(Crvene != 0){
 
 						draw_crvene = Crvene + 5;
@@ -646,7 +645,6 @@ void move() {
 						Zvezda_count = Zvezda_count_temp;
 						Crvene = 0;
 						Zute = 0;
-						Zute_temp = 0;
 						brojac4 = 0;
 						brojac1 = 0;
 						brojac2++;

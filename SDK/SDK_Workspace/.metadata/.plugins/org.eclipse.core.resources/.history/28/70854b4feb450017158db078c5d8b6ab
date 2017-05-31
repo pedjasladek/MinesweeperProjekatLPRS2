@@ -646,7 +646,6 @@ void move() {
 						Zvezda_count = Zvezda_count_temp;
 						Crvene = 0;
 						Zute = 0;
-						Zute_temp = 0;
 						brojac4 = 0;
 						brojac1 = 0;
 						brojac2++;

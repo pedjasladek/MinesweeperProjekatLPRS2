@@ -79,9 +79,6 @@ int flagTrue;
 int randomCounter = 50;
 int numOfMines;
 int firstTimeCenter;
-int k = 0;
-int j = 0;
-
 
 int Skocko = 0;
 int Tref = 16;
@@ -96,7 +93,6 @@ int Pik_count  = 0;
 int Herc_count  = 0;
 int Karo_count = 0;
 int Zvezda_count  = 0;
-
 int Skocko_count_temp = 0;
 int Pik_count_temp = 0;
 int Tref_count_temp = 0;
@@ -104,11 +100,8 @@ int Herc_count_temp = 0;
 int Karo_count_temp = 0;
 int Zvezda_count_temp = 0;
 
-int temp_array[4];
-
 int Zute = 0;
 int Crvene = 0;
-int Zute_temp = 0;
 int draw_crvene = 0;
 int draw_zute = 0;
 
@@ -518,11 +511,9 @@ void move() {
 
 			case CENTER_PRESSED:
 
-
 				if(brojac1 < 64){
 					drawMap(brojac, 0, 80 + brojac1 * 16, 80 + brojac2 * 16, 16,
 							16);
-					temp_array[k] = brojac;
 
 					if (brojac3 == 23 || brojac4 == 3) {
 						endOfGame = 1;
@@ -537,39 +528,30 @@ void move() {
 
 					brojac3++;
 
-					k++;
-
-
-
 					if ((brojac == resenje_niz[0] && brojac1 == 0)|| (brojac == resenje_niz[1] && brojac1 == 1)|| (brojac == resenje_niz[2] && brojac1 == 2)|| (brojac == resenje_niz[3] && brojac1 == 3)) {
 
-						if (brojac == 0 ) {
+						if (brojac == 0 && Skocko_count != 0) {
 							Skocko_count--;
 							Crvene++;
-						} else if (brojac == 16) {
+						} else if (brojac == 16 && Tref_count != 0) {
 							Tref_count--;
 							Crvene++;
-						} else if (brojac == 32) {
+						} else if (brojac == 32 && Pik_count != 0) {
 							Pik_count--;
 							Crvene++;
-						} else if (brojac == 48) {
+						} else if (brojac == 48 && Herc_count != 0) {
 							Herc_count--;
 							Crvene++;
-						} else if (brojac == 64) {
+						} else if (brojac == 64 && Karo_count != 0) {
 							Karo_count--;
 							Crvene++;
-						} else if (brojac == 80) {
+						} else if (brojac == 80 && Zvezda_count != 0) {
 							Zvezda_count--;
 							Crvene++;
-						}
+												}
 						brojac4++;
 
 					}
-
-
-
-
-					/*
 					else if((brojac == resenje_niz[0] && brojac1 != 0)|| (brojac == resenje_niz[1] && brojac1 != 1)|| (brojac == resenje_niz[2] && brojac1 != 2)|| (brojac == resenje_niz[3] && brojac1 != 3)) {
 						if(brojac == 0 && Skocko_count != 0){
 							Skocko_count--;
@@ -598,21 +580,10 @@ void move() {
 
 
 					}
-		*/
 
 					brojac1++;
 
 					if (brojac1 == 4) {
-
-						for(k=0; k < 4; k++){
-							for(j = 0; j < 4; j++){
-								if(temp_array[k] == resenje_niz[j]){
-									Zute_temp++;
-								}
-							}
-						}
-
-						Zute = Zute_temp - Crvene;
 
 						while(Crvene != 0){
 
@@ -637,7 +608,7 @@ void move() {
 
 						}
 
-						i = 0;
+
 						Skocko_count = Skocko_count_temp;
 						Pik_count = Pik_count_temp;
 						Tref_count = Tref_count_temp;
@@ -646,7 +617,6 @@ void move() {
 						Zvezda_count = Zvezda_count_temp;
 						Crvene = 0;
 						Zute = 0;
-						Zute_temp = 0;
 						brojac4 = 0;
 						brojac1 = 0;
 						brojac2++;

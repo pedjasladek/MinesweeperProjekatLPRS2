@@ -452,8 +452,8 @@ void move() {
 	for (i = 0; i < FOUR; i++)
 	{
 		resenje_niz[i] = generateRandom(0, 5);
-		drawMap(resenje_niz[i], 0, 60 + m, 40, 16, 16);
-		m += 16;
+		//drawMap(resenje_niz[i], 0, 60 + m, 40, 16, 16);
+		//m += 16;
 	}
 
 	state_t state = IDLE;

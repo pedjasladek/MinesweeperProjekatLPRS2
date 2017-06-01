@@ -44,6 +44,7 @@
 #include "minesweeper_sprites.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
+#define SIZE 9
 #define UP 0b01000000
 #define DOWN 0b00000100
 #define LEFT 0b00100000
@@ -51,6 +52,16 @@
 #define CENTER 0b00010000
 #define SW0 0b00000001
 #define SW1 0b00000010
+#define BOMB '*'
+#define NUM1 '1'
+#define NUM2 '2'
+#define NUM3 '3'
+#define NUM4 '4'
+#define BLANK '0'
+#define FLAG '#'
+#define NUMOFMINES 9
+//BEG---unpened field
+#define BEG '@'
 #define FOUR 4
 #define MAX 6
 
@@ -60,14 +71,19 @@ int brojac2 = 0;		//Y pozicija gde ce se nacrtati znak u levim poljima
 int brojac3 = 0;		//Brojac za leva 24 polja
 int brojac4 = 0;
 int finish_itterator = 0;
-
+int Crvene_temp = 0;
 
 int endOfGame;
-int i, x, y, ii, oi, R, G, B, RGB, column, row;
-
+int i, x, y, ii, oi, R, G, B, RGB, column, row, RGBgray;
 int m = 0;
+int numOfFlags;
+int flagTrue;
+int randomCounter = 50;
+int numOfMines;
 int k = 0;
 int j = 0;
+
+int size = 4;
 
 char temp_array[4];
 int resenje_niz_temp[4];
@@ -75,13 +91,10 @@ int z = 0;
 
 int Zute = 0;
 int Crvene = 0;
-int Crvene_temp = 0;
-
 int draw_crvene = 0;
 int draw_zute = 0;
 int p=0;
 int resenje_niz[4];
-
 int colors_itteratorX = 5;
 int colors_itteratorY = 0;
 
@@ -176,6 +189,7 @@ void move() {
 	int startX = 105, startY = 61, endX = 119, endY = 75;
 	int oldStartX, oldEndX;
 	int i = 0;
+	int X = 80, Y = 80;
 
 	for (i = 0; i < FOUR; i++)
 	{
@@ -217,7 +231,7 @@ void move() {
 					oldStartX = startX;
 					startX -= 16;
 					endX -= 16;
-					brojac -= 16;
+					 -= 16;
 
 					drawingCursor(startX, startY, endX, endY);
 					drawMap(oldStartX - 105, 0, oldStartX - 1, startY - 1, 16,

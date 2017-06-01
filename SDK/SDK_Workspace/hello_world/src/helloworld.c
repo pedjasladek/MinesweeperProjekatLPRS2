@@ -62,6 +62,8 @@
 #define NUMOFMINES 9
 //BEG---unpened field
 #define BEG '@'
+#define FOUR 4
+#define MAX 6
 
 int brojac = 0;
 int brojac1 = 0;		//X pozicija gde ce se nacrtati znak u levim poljima
@@ -69,11 +71,13 @@ int brojac2 = 0;		//Y pozicija gde ce se nacrtati znak u levim poljima
 int brojac3 = 0;		//Brojac za leva 24 polja
 int brojac4 = 0;
 int finish_itterator = 0;
+int Crvene_temp = 0;
 
 int endOfGame;
 int inc1;
 int inc2;
 int i, x, y, ii, oi, R, G, B, RGB, kolona, red, RGBgray;
+int m = 0;
 int numOfFlags;
 int flagTrue;
 int randomCounter = 50;
@@ -83,6 +87,7 @@ int k = 0;
 int j = 0;
 
 int size = 4;
+
 
 int S=0,T=16,P=32,H=48,K=64,Z=80;
 
@@ -108,7 +113,7 @@ int Herc_count_temp = 0;
 int Karo_count_temp = 0;
 int Zvezda_count_temp = 0;
 
-int temp_array[4];
+char temp_array[4];
 int resenje_niz_temp[4];
 int z = 0;
 
@@ -233,7 +238,7 @@ void makeTable(char temp[9][9]) {
 	int numOfMines = NUMOFMINES, row, column, i, j, m, surroundingMines = 0;
 	char table[9][9];
 
-	srand(randomCounter);
+
 
 	//popunjava matricu nulama
 	for (i = 0; i < 9; i++) {
@@ -419,9 +424,22 @@ void drawingCursor(int startX, int startY, int endX, int endY) {
 
 }
 
+
+int generateRandom(int l, int u)
+{
+
+	int r = rand() % ((u - l) + 1);
+	r = l + r;
+
+	return r * 16;
+}
+
+
+
 //	Function that controls movement of cursor
 
 void move() {
+
 
 	typedef enum {
 		IDLE, LEFT_PRESSED, RIGHT_PRESSED, CENTER_PRESSED
@@ -431,42 +449,12 @@ void move() {
 	int oldStartX, oldEndX;
 	int X = 80, Y = 80, XX, YY, i;
 
-	resenje_niz[0] = K;
-    resenje_niz[1] = K;
-	resenje_niz[2] = P;
-	resenje_niz[3] = Z;
-	resenje_niz_temp[0] = K;
-	resenje_niz_temp[1] = K;
-	resenje_niz_temp[2] = P;
-	resenje_niz_temp[3] = Z;
-
-	for(i = 0; i < 4; i++){
-		if(resenje_niz[i] == 0){
-			Skocko_count++;
-		}
-		else if(resenje_niz[i] == 16){
-			Tref_count++;
-		}
-		else if(resenje_niz[i] == 32){
-			Pik_count++;
-		}
-		else if(resenje_niz[i] == 48){
-			Herc_count++;
-		}
-		else if(resenje_niz[i] == 64){
-			Karo_count++;
-		}
-		else if(resenje_niz[i] == 80){
-			Zvezda_count++;
-		}
+	for (i = 0; i < FOUR; i++)
+	{
+		resenje_niz[i] = generateRandom(0, 5);
+		//drawMap(resenje_niz[i], 0, 60 + m, 40, 16, 16);
+		//m += 16;
 	}
-
-	Skocko_count_temp = Skocko_count;
-	Pik_count_temp = Pik_count;
-	Tref_count_temp = Tref_count;
-	Herc_count_temp = Herc_count;
-	Karo_count_temp = Karo_count;
-	Zvezda_count_temp = Zvezda_count;
 
 	state_t state = IDLE;
 	state_t btn_old_state = IDLE;
@@ -530,16 +518,26 @@ void move() {
 
 
 				if(brojac1 < 64){
-					drawMap(brojac, 0, 80 + brojac1 * 16, 80 + brojac2 * 16, 16,
-							16);
+					drawMap(brojac, 0, 80 + brojac1 * 16, 80 + brojac2 * 16, 16, 16);
 					temp_array[k] = brojac;
 					k++;
 					brojac3++;
 
+					if (brojac == 0)
+						temp_array[k] = '0';
+					else if (brojac == 16)
+						temp_array[k] = '1';
+					else if (brojac == 32)
+						temp_array[k] = '2';
+					else if (brojac == 48)
+						temp_array[k] = '3';
+					else if (brojac == 64)
+						temp_array[k] = '4';
+					else if (brojac == 80)
+						temp_array[k] = '5';
 
 
-
-
+					/*
 					if ((brojac == resenje_niz[0] && brojac1 == 0)|| (brojac == resenje_niz[1] && brojac1 == 1)|| (brojac == resenje_niz[2] && brojac1 == 2)|| (brojac == resenje_niz[3] && brojac1 == 3)) {
 
 						if (brojac == 0 ) {
@@ -557,18 +555,7 @@ void move() {
 						}
 						brojac4++;
 					}
-
-					if (brojac3 == 24 || brojac4 == 4) {
-						endOfGame = 1;
-						//printOutEndOfGame(blankMap, solvedMap);
-						for (kolona = 7; kolona < 8; kolona++) {
-							for (red = 0; red < 4; red++, finish_itterator++) {
-								drawMap(resenje_niz[finish_itterator], 0,
-										80 + red * 16, 80 + kolona * 16, 16,
-										16);
-							}
-						}
-					}
+					*/
 
 
 
@@ -608,7 +595,45 @@ void move() {
 
 					if (brojac1 == 4) {
 
-						for(k=0; k < 4; k++){
+						srand(getpid());
+
+						Crvene = 0;
+						Zute = 0;
+						int it, pt, xt;
+						int skip[FOUR] = { 0 };
+						int whiteSkip[FOUR] = { 0 };
+
+						// Red Loop, sets indexes to skip
+						for (it = 0; it < FOUR; it++) {
+							if (resenje_niz[it] == temp_array[it]) {
+								Crvene += 1;
+								skip[it] = 1;
+								whiteSkip[it] = 1;
+							}
+						}
+
+						for (pt = 0; pt < FOUR; pt++) {
+							if (skip[pt]) // Skipping those marked as red
+							{
+								continue;
+							}
+
+							for (xt = 0; xt < FOUR; xt++) {
+								if (whiteSkip[xt]) // Skiping those marked as white
+								{
+									continue;
+								} else if (temp_array[pt] == resenje_niz[xt]) // Finds whites
+										{
+									//White found
+									Zute += 1;
+									whiteSkip[xt] = 1;
+									skip[pt] = 1;
+									break;
+								}
+							}
+						}
+
+					/*	for(k=0; k < 4; k++){
 							for(j = 0; j < size; j++){
 								if(temp_array[k] == resenje_niz_temp[j]){
 									Zute_temp++;
@@ -622,7 +647,8 @@ void move() {
 							}
 						}
 
-						Zute = Zute_temp - Crvene;
+						Zute = Zute_temp - Crvene; */
+						Crvene_temp = Crvene;
 						draw_crvene = Crvene + 5;
 
 						while(Crvene > 0){
@@ -647,19 +673,24 @@ void move() {
 							}
 
 						}
+
+						if (brojac3 == 24 || Crvene_temp == 4) {
+							endOfGame = 1;
+							//printOutEndOfGame(blankMap, solvedMap);
+							for (kolona = 7; kolona < 8; kolona++) {
+								for (red = 0; red < 4;
+										red++, finish_itterator++) {
+									drawMap(resenje_niz[finish_itterator], 0,
+											80 + red * 16, 80 + kolona * 16, 16,
+											16);
+								}
+							}
+						}
+
 						k = 0;
 						i = 0;
-						resenje_niz_temp[0] = K;
-						resenje_niz_temp[1] = K;
-						resenje_niz_temp[2] = P;
-						resenje_niz_temp[3] = Z;
-						Skocko_count = Skocko_count_temp;
-						Pik_count = Pik_count_temp;
-						Tref_count = Tref_count_temp;
-						Herc_count = Herc_count_temp;
-						Karo_count = Karo_count_temp;
-						Zvezda_count = Zvezda_count_temp;
 						Crvene = 0;
+						Crvene_temp = 0;
 						Zute = 0;
 						Zute_temp = 0;
 						brojac4 = 0;
@@ -678,7 +709,10 @@ void move() {
 	}
 }
 
+
+
 int main() {
+
 
 	int j, p, r;
 	inc1 = 0;

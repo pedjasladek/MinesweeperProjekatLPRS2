@@ -183,7 +183,7 @@ void game() {
 	state_t btn_old_state = IDLE;
 
 	int startX = 105, startY = 61, endX = 119, endY = 75;
-	int oldStartX, oldEndX;
+	int oldStartX;
 
 	//	Generate target
 

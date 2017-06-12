@@ -73,11 +73,9 @@ int finish_itterator = 0;
 
 
 int endOfGame;
-int i, x, y, ii, oi, R, G, B, RGB, column, row;
+int i, x, y, ii, oi, R, G, B, RGB, column, row, m = 0;
 
-int m = 0;
 int array_itterator = 0;
-int j = 0;
 
 char temp_array[4];
 int tempSolved[4];

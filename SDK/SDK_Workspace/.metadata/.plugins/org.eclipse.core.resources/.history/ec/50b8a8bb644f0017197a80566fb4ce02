@@ -80,15 +80,16 @@ int array_itterator = 0;
 int j = 0;
 
 char temp_array[4];
-int tempSolved[4];
+int resenje_niz_temp[4];
+int z = 0;
 
 int Yellow = 0;
 int Red = 0;
-int tempRed = 0;
+int Red_temp = 0;
 int drawRed = 0;
 int drawYellow = 0;
 
-int Solved[4];
+int solved[4];
 
 int colors_itteratorX = 5;
 int colors_itteratorY = 0;
@@ -187,9 +188,10 @@ void game() {
 
 	//	Generate target
 
-	for (i = 0; i < FOUR; i++) {
-		Solved[i] = generateRandom(0, 5);
-		drawMap(Solved[i], 0, 60 + m, 40, 16, 16);
+	for (i = 0; i < FOUR; i++)
+	{
+		solved[i] = generateRandom(0, 5);
+		drawMap(solved[i], 0, 60 + m, 40, 16, 16);
 		m += 16;
 	}
 
@@ -255,6 +257,8 @@ void game() {
 
 				if(outX < 64){
 
+					srand(time(NULL));
+
 					drawMap(cursorX, Y, 80 + outX * pixel16, 80 + outY * pixel16, pixel16, pixel16);
 					temp_array[array_itterator] = cursorX;
 					array_itterator++;
@@ -282,7 +286,7 @@ void game() {
 
 						// row Loop, sets indexes to skip
 						for (it = 0; it < FOUR; it++) {
-							if (Solved[it] == temp_array[it]) {
+							if (solved[it] == temp_array[it]) {
 								Red += 1;
 								skip[it] = 1;
 								whiteSkip[it] = 1;
@@ -299,7 +303,7 @@ void game() {
 								if (whiteSkip[xt]) // Skipping those marked as white
 								{
 									continue;
-								} else if (temp_array[pt] == Solved[xt]) // Finds whites
+								} else if (temp_array[pt] == solved[xt]) // Finds whites
 										{
 									//White found
 									Yellow += 1;
@@ -311,7 +315,7 @@ void game() {
 						}
 
 
-						tempRed = Red;
+						Red_temp = Red;
 						drawRed = Red + 5;
 
 						while(Red > 0){
@@ -335,11 +339,11 @@ void game() {
 
 						}
 
-						if (finish_count == 24 || tempRed == 4) {
+						if (finish_count == 24 || Red_temp == 4) {
 							endOfGame = 1;
 							for (column = 7; column < 8; column++) {
 								for (row = 0; row < 4; row++, finish_itterator++) {
-									drawMap(Solved[finish_itterator], Y, 80 + row * pixel16, 80 + column * pixel16, pixel16, pixel16);
+									drawMap(solved[finish_itterator], Y, 80 + row * pixel16, 80 + column * pixel16, pixel16, pixel16);
 								}
 							}
 						}
@@ -347,7 +351,7 @@ void game() {
 						array_itterator = 0;
 
 						Red = 0;
-						tempRed = 0;
+						Red_temp = 0;
 						Yellow = 0;
 
 						outX = 0;

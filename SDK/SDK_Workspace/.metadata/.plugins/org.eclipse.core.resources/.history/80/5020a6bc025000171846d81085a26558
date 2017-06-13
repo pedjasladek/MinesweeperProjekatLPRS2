@@ -257,7 +257,7 @@ void game() {
 
 					drawMap(cursorX, Y, 80 + outX * pixel16, 80 + outY * pixel16, pixel16, pixel16);
 					temp_array[array_itterator] = cursorX;
-					array_itterator++;
+
 					finish_count++;
 					outX++;
 
@@ -273,6 +273,8 @@ void game() {
 						temp_array[array_itterator] = Karo;		// 4
 					else if (cursorX == 80)
 						temp_array[array_itterator] = Zvezda;	// 5
+
+					array_itterator++;
 
 					if (outX == 4) {
 
@@ -311,9 +313,10 @@ void game() {
 							}
 						}
 
-
 						tempRed = Red;
 						drawRed = Red + 5;
+
+						// Drawing red
 
 						while(Red > 0){
 
@@ -326,6 +329,7 @@ void game() {
 
 						drawYellow = Yellow + drawRed;
 
+						// Drawing yellow
 
 						while(Yellow > 0){
 
@@ -335,6 +339,8 @@ void game() {
 							}
 
 						}
+
+						// Checking if end of game
 
 						if (finish_count == 24 || tempRed == 4) {
 							endOfGame = 1;

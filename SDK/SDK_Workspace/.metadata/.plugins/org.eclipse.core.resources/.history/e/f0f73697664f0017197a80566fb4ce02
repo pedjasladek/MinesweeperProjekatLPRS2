@@ -42,7 +42,7 @@
 #include "xil_exception.h"
 #include "vga_periph_mem.h"
 #include "minesweeper_sprites.h"
-#include <stdlib.h>     /* rand */
+#include <stdlib.h>     /* srand, rand */
 #include <time.h>
 #define UP 0b01000000
 #define DOWN 0b00000100
@@ -277,35 +277,34 @@ void game() {
 					if (outX == 4) {
 
 						int it, pt, xt;
-						int redSkip[FOUR] = { 0 };
-						int yellowSkip[FOUR] = { 0 };
+						int skip[FOUR] = { 0 };
+						int whiteSkip[FOUR] = { 0 };
 
-						// red Loop, sets indexes to redSkip
-
+						// row Loop, sets indexes to skip
 						for (it = 0; it < FOUR; it++) {
 							if (Solved[it] == temp_array[it]) {
 								Red += 1;
-								redSkip[it] = 1;
-								yellowSkip[it] = 1;
+								skip[it] = 1;
+								whiteSkip[it] = 1;
 							}
 						}
 
 						for (pt = 0; pt < FOUR; pt++) {
-							if (redSkip[pt]) // Skipping those marked as red
+							if (skip[pt]) // Skipping those marked as row
 							{
 								continue;
 							}
 
 							for (xt = 0; xt < FOUR; xt++) {
-								if (yellowSkip[xt]) // Skipping those marked as white
+								if (whiteSkip[xt]) // Skipping those marked as white
 								{
 									continue;
 								} else if (temp_array[pt] == Solved[xt]) // Finds whites
 										{
 									//White found
 									Yellow += 1;
-									yellowSkip[xt] = 1;
-									redSkip[pt] = 1;
+									whiteSkip[xt] = 1;
+									skip[pt] = 1;
 									break;
 								}
 							}

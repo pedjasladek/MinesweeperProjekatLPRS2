@@ -256,7 +256,6 @@ void game() {
 				if(outX < 64){
 
 					drawMap(cursorX, Y, 80 + outX * pixel16, 80 + outY * pixel16, pixel16, pixel16);
-					temp_array[array_itterator] = cursorX;
 					array_itterator++;
 					finish_count++;
 					outX++;

@@ -189,8 +189,8 @@ void game() {
 
 	for (i = 0; i < FOUR; i++) {
 		Solved[i] = generateRandom(0, 5);
-		//drawMap(Solved[i], 0, 60 + m, 40, 16, 16);
-		//m += 16;
+		drawMap(Solved[i], 0, 60 + m, 40, 16, 16);
+		m += 16;
 	}
 
 	drawingCursor(startX, startY, endX, endY);		// Drawing cursor first time
